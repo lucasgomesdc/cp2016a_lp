@@ -7,7 +7,7 @@ public class Cp{
 
 
    //Hash Tabela de Simbolos
-   Map<String, String> tS = new HashMap<String, Integer>();
+   Map<String, String> tS = new HashMap<String, String>();
    
    //construtor da classe
    public Cp(){
