@@ -8,7 +8,7 @@ public class Cp{
 
    //Hash Tabela de Simbolos
    Map<String, String> tS = new HashMap<String, String>();
-   public static String path;
+   public static String path, linha, lex;
    public static BufferedReader buffRead;   
    
    //construtor da classe
@@ -68,6 +68,10 @@ public class Cp{
       tS.put("boolean", "boolean");   
    }
    
+   public void analisadorSintatico(){
+   
+   }
+   
    
    
    //Como validar se e' letra ou digit
@@ -79,8 +83,14 @@ public class Cp{
    }
    
    public static void main(String [] args)throws IOException{
-         
-         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp";
+
+         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/teste.txt";
          buffRead = new BufferedReader(new FileReader(path));
+         
+         while( (linha = buffRead.readLine())!= null ){
+            if(!linha.equals("")){ //IGNORAR QUEBRA DE LINHA NO ARQUIVO
+               
+            }
+         }
    }
 }
