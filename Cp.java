@@ -78,20 +78,8 @@ public class Cp{
       valida = Character.isDigit(caractere);
    }
    
-
-
-<<<<<<< HEAD
    public static void main(String [] args)throws IOException{
          
          path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp";
          buffRead = new BufferedReader(new FileReader(path));
-         
-         
-   
-=======
-   public static void main(String [] args){
-
-
->>>>>>> origin/master
-   }
 }
