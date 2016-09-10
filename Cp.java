@@ -14,6 +14,7 @@ public class Cp{
       inicializarHash();
    }
    
+  
 
 
    //Inicializa a Tabela de Simbolos
@@ -69,6 +70,6 @@ public class Cp{
 
    public static void main(String [] args){
 
-   
+
    }
 }
