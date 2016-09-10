@@ -82,4 +82,5 @@ public class Cp{
          
          path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp";
          buffRead = new BufferedReader(new FileReader(path));
+   }
 }
