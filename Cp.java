@@ -27,7 +27,8 @@ public class Cp{
    public String buscaHash(String token){
         return tS.get(token);
    }
-
+   
+ 
    //Inicializa a Tabela de Simbolos
    public void inicializarHash(){
       tS.put("final", "final");
@@ -79,6 +80,7 @@ public class Cp{
    
 
 
+<<<<<<< HEAD
    public static void main(String [] args)throws IOException{
          
          path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp";
@@ -86,5 +88,10 @@ public class Cp{
          
          
    
+=======
+   public static void main(String [] args){
+
+
+>>>>>>> origin/master
    }
 }
