@@ -3,15 +3,30 @@ import java.lang.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Compiladores{
+
+public class Cp{
 
 
    //Hash Tabela de Simbolos
-   Map<String, String> tS = new HashMap<String, Integer>();
+   Map<String, String> tS = new HashMap<String, String>();
+   public static String path;
+   public static BufferedReader buffRead;   
    
    //construtor da classe
-   public Compiladores(){
+   public Cp(){
       inicializarHash();
+
+   }
+   
+      
+   //insere na Hash a token desejada
+   public void setHash(String token){
+       tS.put(token, token);
+   }
+   
+   //Efetua uma busca na hash pelo token desejado, retorna null se não encontrado
+   public String buscaHash(String token){
+        return tS.get(token);
    }
 
    //Inicializa a Tabela de Simbolos
@@ -65,8 +80,12 @@ public class Compiladores{
    
 
 
-   public static void main(String [] args){
-
+   public static void main(String [] args)throws IOException{
+         
+         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp";
+         buffRead = new BufferedReader(new FileReader(path));
+         
+         
    
    }
 }
