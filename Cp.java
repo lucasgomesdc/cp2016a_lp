@@ -3,14 +3,14 @@ import java.lang.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Compiladores{
+public class Cp{
 
 
    //Hash Tabela de Simbolos
-   Map<String, String> tS = new HashMap<String, Integer>();
+   Map<String, String> tS = new HashMap<String, String>();
    
    //construtor da classe
-   public Compiladores(){
+   public Cp(){
       inicializarHash();
    }
 
