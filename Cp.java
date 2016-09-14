@@ -7,7 +7,7 @@ public class Cp{
 
 
    //Hash Tabela de Simbolos
-   Map<String, String> tS = new HashMap<String, String>();
+   public static Map<String, String> tS = new HashMap<String, String>();
    public static String path, linha, lex;
    public static BufferedReader buffRead;   
    
@@ -19,12 +19,12 @@ public class Cp{
    
       
    //insere na Hash a token desejada
-   public void setHash(String token){
+   public static void setHash(String token){
        tS.put(token, token);
    }
    
    //Efetua uma busca na hash pelo token desejado, retorna null se não encontrado
-   public String buscaHash(String token){
+   public static String buscaHash(String token){
         return tS.get(token);
    }
    
@@ -69,10 +69,51 @@ public class Cp{
    }
    
    public void analisadorSintatico(){
-   
+
+      //for(int i=0;i<linha.length;i++){
+         
+      //}
    }
    
+   public static void analisadorLexico()throws IOException{
+      
+      while( (linha = buffRead.readLine())!= null ){  
+           lex = "";
+           automatoLexico(); 
+         }
+   }
    
+   public static void automatoLexico(){
+      int estado = 0;
+      
+      for(int i=0; i<linha.length()-1;i++){
+         switch (estado){
+            case 0:
+               if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_'){
+                  lex += linha.charAt(i);
+                  estado = 1;
+               }
+            case 1:
+               if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_' || Character.isDigit(linha.charAt(i))){
+                  lex += linha.charAt(i);
+               }else{
+                  estado = 2;
+                  i--;
+               }
+           case 2:
+               chamaTabela();
+               i--;
+               estado = 0;
+               
+         }
+      }
+   }
+   //FUNÇÃO PARA VERICAR SE TOKEN JA EXISTE NA TABELA, SE ELE NAO EXISTIR, INSERE O TOKEN
+   public static void chamaTabela(){
+      if(buscaHash(lex) == null){
+         setHash(lex);
+      }
+   }
    
    //Como validar se e' letra ou digit
    public void validar(){
@@ -84,13 +125,15 @@ public class Cp{
    
    public static void main(String [] args)throws IOException{
 
-         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/teste.txt";
+         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo.l.txt";
+         //path = args[0];
          buffRead = new BufferedReader(new FileReader(path));
-         
-         while( (linha = buffRead.readLine())!= null ){
-            if(!linha.equals("")){ //IGNORAR QUEBRA DE LINHA NO ARQUIVO
-               
-            }
-         }
+         //System.out.println(path);
+         analisadorLexico();
+         //while( (linha = buffRead.readLine())!= null ){
+            //if(!linha.equals("")){ //IGNORAR QUEBRA DE LINHA NO ARQUIVO
+               //System.out.println(linha.length());
+            //}
+         //}
    }
 }
