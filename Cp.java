@@ -69,15 +69,17 @@ public class Cp{
       tS.put("boolean", "boolean");   
    }
    
-   public void analisadorSintatico()throws IOException{
+   public static void analisadorSintatico()throws IOException{
       String token;
       
       while( (linha = buffRead.readLine())!= null ){  
            posLinha = 0;
-           while(posLinha != linha.length()){
+           System.out.println(linha.length());
+           while(posLinha < linha.length()-1){
+            lex = "";
             token = analisadorLexico();
             System.out.println(token);
-            lex = "";
+            
            } 
        }
    }
@@ -89,7 +91,7 @@ public class Cp{
    public static String automatoLexico(){
       int estado = 0;
       
-      for(int i = posLinha; i<linha.length()-1;i++){
+      for(int i = posLinha; i<linha.length();i++){
          switch (estado){
             case 0:
                if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_'){
@@ -113,7 +115,12 @@ public class Cp{
                }else if(linha.charAt(i) == '(' || linha.charAt(i) == ')' || linha.charAt(i) == '-' || linha.charAt(i) == '+' || linha.charAt(i) == '*' || linha.charAt(i) == ',' || linha.charAt(i) == ';'){
                   lex += linha.charAt(i);
                   estado = 2;
+               }else if(linha.charAt(i) == '/' ){
+                  lex+= linha.charAt(i);
+                  estado = 8;
                }
+               
+               break;
                //---------FIM CASE 0 ----------
             case 1:
                if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_' || Character.isDigit(linha.charAt(i))){
@@ -121,6 +128,7 @@ public class Cp{
                }else{
                   estado = 2;
                }
+               break;
                // -------- FIM CASE 1 ---------
            case 2:
                chamaTabela();
@@ -135,6 +143,7 @@ public class Cp{
                }else{
                   estado = 666; 
                }
+               break;
                // --------- FIM CASE 3 ----------
             case 4:
                if(linha.charAt(i) == '&'){
@@ -143,6 +152,7 @@ public class Cp{
                }else{
                   estado = 666; 
                }
+               break;
                // --------- FIM CASE 4 ----------
             case 5:
                if(linha.charAt(i) == '='){
@@ -154,6 +164,7 @@ public class Cp{
                }else{
                   estado = 2; 
                }
+               break;
                // --------- FIM CASE 5 ----------
              case 6:
                if(linha.charAt(i) == '='){
@@ -162,6 +173,7 @@ public class Cp{
                }else{
                   estado = 2; 
                }
+               break;
                // --------- FIM CASE 6 ----------
              case 7:
                if(linha.charAt(i) == '='){
@@ -170,7 +182,44 @@ public class Cp{
                }else{
                   estado = 2; 
                }
+               break;
                // --------- FIM CASE 7 ----------
+             case 8:
+               if(linha.charAt(i) == '*'){
+                  estado = 9;              
+               }else{
+                  lex += linha.charAt(i);              
+                  estado = 2; 
+               }
+               break;
+               // --------- FIM CASE 8 ----------
+             case 9:
+               if(linha.charAt(i) != '*'){
+                  lex = "";
+                  estado = 9;              
+               }else{              
+                  estado = 10; 
+               }
+               break;
+               // --------- FIM CASE 9 ----------
+             case 10:
+               if(linha.charAt(i) == '/'){
+                  posLinha = i;
+                  return null;              
+               }else if(linha.charAt(i) == '*'){              
+                  estado = 10; 
+               }else{
+                  estado = 9;
+               }
+               break;
+             // --------- FIM CASE 10 ----------
+             case 666:
+                  System.out.println("ERRO");
+                  break;
+             // --------- FIM CASE 666 ----------
+             default:
+               System.out.println("ERRO");
+      
             }//FIM SWITCH
          }
          return null;
@@ -196,7 +245,7 @@ public class Cp{
          //path = args[0];
          buffRead = new BufferedReader(new FileReader(path));
          //System.out.println(path);
-         analisadorLexico();
+         analisadorSintatico();
          //while( (linha = buffRead.readLine())!= null ){
             //if(!linha.equals("")){ //IGNORAR QUEBRA DE LINHA NO ARQUIVO
                //System.out.println(linha.length());
