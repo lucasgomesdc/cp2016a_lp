@@ -31,7 +31,7 @@ public class Cp{
    
  
    //Inicializa a Tabela de Simbolos
-   public void inicializarHash(){
+   public static void inicializarHash(){
       tS.put("final", "final");
       tS.put("int", "int");
       tS.put("byte", "byte");
@@ -70,14 +70,17 @@ public class Cp{
    }
    
    public static void analisadorSintatico()throws IOException{
+      //INICIALIZ UMA VARIAVEL AUXILIAR DE TOKENS
       String token;
       
+      // PERCORRE LINHA A LINHA PARA ANALISAR TODOS OS TOKENS
       while( (linha = buffRead.readLine())!= null ){  
            posLinha = 0;
            System.out.println(linha.length());
-           while(posLinha < linha.length()-1){
+           while(posLinha < linha.length()){
             lex = "";
             token = analisadorLexico();
+            if(token == "atribuicao"|| token == ";" ) posLinha+=1;
             System.out.println(token);
             
            } 
@@ -91,12 +94,15 @@ public class Cp{
    public static String automatoLexico(){
       int estado = 0;
       
-      for(int i = posLinha; i<linha.length();i++){
+      for(int i = posLinha; i<=linha.length();i++){
          switch (estado){
             case 0:
                if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_'){
                   lex += linha.charAt(i);
                   estado = 1;
+               }else if(Character.isDigit(linha.charAt(i))){
+                  lex += linha.charAt(i);
+                  estado = 11;
                }else if(linha.charAt(i) == '|'){
                   lex += linha.charAt(i);
                   estado = 3;
@@ -213,6 +219,28 @@ public class Cp{
                }
                break;
              // --------- FIM CASE 10 ----------
+             case 11:
+               if(Character.isDigit(linha.charAt(i))){
+                  lex += linha.charAt(i);
+                  estado = 11;   
+               }else if(linha.charAt(i) == '.'){              
+                  estado = 12; 
+               }else{
+                  estado = 2;
+               }
+               break;
+             // --------- FIM CASE 11 ----------
+             case 12:
+               if(Character.isDigit(linha.charAt(i))){
+                  lex += linha.charAt(i);
+                  estado = 12;   
+               }else if(linha.charAt(i) != '.' && !(Character.isDigit(linha.charAt(i)))){              
+                  estado = 2; 
+               }else{
+                  estado = 666;
+               }
+               break;
+             // --------- FIM CASE 12 ----------
              case 666:
                   System.out.println("ERRO");
                   break;
@@ -240,8 +268,8 @@ public class Cp{
    }
    
    public static void main(String [] args)throws IOException{
-
-         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo.l.txt";
+         inicializarHash();
+         path = "C:/Users/Pedrosa/Documents/Compiladores/cp2016a_lp/exemplo2.l.txt";
          //path = args[0];
          buffRead = new BufferedReader(new FileReader(path));
          //System.out.println(path);
