@@ -8,7 +8,7 @@ public class Cp{
 
    //Hash Tabela de Simbolos
    public static Map<String, String> tS = new HashMap<String, String>();
-   public static String path, linha, lex;
+   public static String path, linha, lex, lex2;
    public static int posLinha;
    public static BufferedReader buffRead;   
    
@@ -21,7 +21,7 @@ public class Cp{
       
    //insere na Hash a token desejada
    public static void setHash(String token){
-       tS.put(token, token);
+       tS.put(token, lex2);
    }
    
    //Efetua uma busca na hash pelo token desejado, retorna null se não encontrado
@@ -29,6 +29,12 @@ public class Cp{
         return tS.get(token);
    }
    
+   //FUNÇÃO PARA VERICAR SE TOKEN JA EXISTE NA TABELA, SE ELE NAO EXISTIR, INSERE O TOKEN
+   public static void chamaTabela(){
+      if(buscaHash(lex) == null){
+         setHash(lex);
+      }
+   }
  
    //Inicializa a Tabela de Simbolos
    public static void inicializarHash(){
@@ -72,20 +78,22 @@ public class Cp{
    public static void analisadorSintatico()throws IOException{
       //INICIALIZ UMA VARIAVEL AUXILIAR DE TOKENS
       String token;
+      lex2 = "";
       
       // PERCORRE LINHA A LINHA PARA ANALISAR TODOS OS TOKENS
       while( (linha = buffRead.readLine())!= null ){  
            posLinha = 0;
-           System.out.println(linha.length());
+           //System.out.println(linha.length());
            while(posLinha < linha.length()){
             lex = "";
             token = analisadorLexico();
-            if(token == "atribuicao"|| token == ";" ) posLinha+=1;
+            if(token == "atribuicao"|| token == "(" || token == ")" || token == "-" || token == "," || token == ";" || token == "+" ||token == "*" || token == "/" || token == "<" || token.charAt(0) == '"') posLinha+=1;
             System.out.println(token);
             
            } 
        }
    }
+  
    
    public static String analisadorLexico(){
        return automatoLexico();  
@@ -124,6 +132,14 @@ public class Cp{
                }else if(linha.charAt(i) == '/' ){
                   lex+= linha.charAt(i);
                   estado = 8;
+               }else if(linha.charAt(i) == '"'){
+                  lex += linha.charAt(i);
+                  estado = 13;
+               }else if(linha.charAt(i) == ' '){
+                  if(i == ( linha.length()-1)){
+                     posLinha = i+1;
+                     return " ";
+                  }
                }
                
                break;
@@ -131,7 +147,14 @@ public class Cp{
             case 1:
                if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_' || Character.isDigit(linha.charAt(i))){
                   lex += linha.charAt(i);
+                  if(i == (linha.length()-1)){
+                     chamaTabela();
+                     i++;
+                     posLinha = i;
+                     return buscaHash(lex);
+                  }
                }else{
+                  lex2 = "id";
                   estado = 2;
                }
                break;
@@ -210,8 +233,9 @@ public class Cp{
                // --------- FIM CASE 9 ----------
              case 10:
                if(linha.charAt(i) == '/'){
+                  i++;
                   posLinha = i;
-                  return null;              
+                  return "comentario";              
                }else if(linha.charAt(i) == '*'){              
                   estado = 10; 
                }else{
@@ -241,6 +265,17 @@ public class Cp{
                }
                break;
              // --------- FIM CASE 12 ----------
+             case 13:
+               if(linha.charAt(i) != '"'){
+                  lex += linha.charAt(i);
+                  estado = 13;    
+               }else{
+                  lex += linha.charAt(i);
+                  estado = 2;
+                  lex2 = lex;
+               }
+               break;
+             // --------- FIM CASE 13 ----------
              case 666:
                   System.out.println("ERRO");
                   break;
@@ -252,12 +287,7 @@ public class Cp{
          }
          return null;
       }
-   //FUNÇÃO PARA VERICAR SE TOKEN JA EXISTE NA TABELA, SE ELE NAO EXISTIR, INSERE O TOKEN
-   public static void chamaTabela(){
-      if(buscaHash(lex) == null){
-         setHash(lex);
-      }
-   }
+
    
    //Como validar se e' letra ou digit
    public void validar(){
@@ -269,7 +299,7 @@ public class Cp{
    
    public static void main(String [] args)throws IOException{
          inicializarHash();
-         path = "C:/Users/Pedrosa/Documents/Compiladores/cp2016a_lp/exemplo2.l.txt";
+         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo2.l.txt";
          //path = args[0];
          buffRead = new BufferedReader(new FileReader(path));
          //System.out.println(path);
