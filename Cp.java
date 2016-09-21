@@ -8,9 +8,9 @@ public class Cp{
 
    //Hash Tabela de Simbolos
    public static Map<String, String> tS = new HashMap<String, String>();
-   public static String path, linha, lex, lex2;
+   public static String path, linha, lex, lex2, token_atual;
    public static int posLinha;
-   public static BufferedReader buffRead;   
+   public static BufferedReader buffRead;
    
    //construtor da classe
    public Cp(){
@@ -42,6 +42,7 @@ public class Cp{
       tS.put("int", "int");
       tS.put("byte", "byte");
       tS.put("string", "string");
+      tS.put("boolean", "boolean");   
       tS.put("while", "while");
       tS.put("if", "if");
       tS.put("else", "else");
@@ -72,12 +73,15 @@ public class Cp{
       tS.put("writeln", "writeln");
       tS.put("TRUE", "TRUE");
       tS.put("FALSE", "FALSE");
-      tS.put("boolean", "boolean");   
+   }
+   
+   public static void verificaTokenAtual(){
+      if(token_atual == "atribuicao" || token_atual == "sconstante" || token_atual == "(" || token_atual == ")" || token_atual == "-" || token_atual == "," || token_atual == ";" || token_atual == "+" ||token_atual == "*" || token_atual == "/" || token_atual == "<" || token_atual.charAt(0) == '"') posLinha+=1;
    }
    
    public static void analisadorSintatico()throws IOException{
       //INICIALIZ UMA VARIAVEL AUXILIAR DE TOKENS
-      String token;
+
       lex2 = "";
       
       // PERCORRE LINHA A LINHA PARA ANALISAR TODOS OS TOKENS
@@ -86,17 +90,19 @@ public class Cp{
            //System.out.println(linha.length());
            while(posLinha < linha.length()){
             lex = "";
-            token = analisadorLexico();
-            if(token == "atribuicao"|| token == "(" || token == ")" || token == "-" || token == "," || token == ";" || token == "+" ||token == "*" || token == "/" || token == "<" || token.charAt(0) == '"') posLinha+=1;
-            System.out.println(token);
+            analisadorLexico();
+            //CODIGO();
+            
+            System.out.println(token_atual);
             
            } 
        }
    }
   
    
-   public static String analisadorLexico(){
-       return automatoLexico();  
+   public static void analisadorLexico(){
+       token_atual = automatoLexico();
+       verificaTokenAtual();
    }
    
    public static String automatoLexico(){
@@ -250,6 +256,7 @@ public class Cp{
                }else if(linha.charAt(i) == '.'){              
                   estado = 12; 
                }else{
+                  lex2 = "dconstante";
                   estado = 2;
                }
                break;
@@ -271,8 +278,11 @@ public class Cp{
                   estado = 13;    
                }else{
                   lex += linha.charAt(i);
+                  lex2 = "sconstante";
                   estado = 2;
-                  lex2 = lex;
+                  
+                  //lex2 = lex;
+                  
                }
                break;
              // --------- FIM CASE 13 ----------
@@ -297,9 +307,159 @@ public class Cp{
       valida = Character.isDigit(caractere);
    }
    
+   
+   
+   //==========================================ANALISADOR SINTATICO==========================
+   
+   /*
+      Procedimento casaToken
+      Retorna:
+        - verdadeiro se for o token esperado
+        - falso se não for o token esperado 
+   */
+   public static boolean casaToken(String tok_esp){
+      boolean resposta = false;
+      
+      if(token_atual == tok_esp){
+         resposta = true;
+      }
+      return resposta;
+   }
+   
+   public static void CODIGO(){   
+      if(casaToken("int") || casaToken("byte") || casaToken("string") || casaToken("boolean")){
+         analisadorLexico();
+         DV();
+      }else if(casaToken("final")){
+         analisadorLexico();
+         DC();
+      }else if(casaToken("while")){
+         analisadorLexico();
+         CR();
+      }else if(casaToken("if")){
+         analisadorLexico();
+         CT();
+      }else if(casaToken(";")){
+         //fim da linha
+      } else if(casaToken("readln")){
+         analisadorLexico();
+         CL();
+      } else if(casaToken("id")){
+         analisadorLexico();
+         CA();
+      }else{
+         System.out.println("ERRO SINTATICO");
+      }
+   }
+   
+   //DV -> TIPO (CA);
+   public static void DV(){
+      if(casaToken("id")){
+         analisadorLexico();
+         X();
+      }else {
+         System.out.println("ERRO SINTATICO");
+      }
+   }
+     
+   //DC -> final TIPO id{,id};
+   public static void DC(){       
+      if(casaToken("id")){
+         analisadorLexico();
+         CA();
+      } else{
+         System.out.println("ERRO SINTATICO");
+      }
+   }
+   
+   
+   public static void CA(){
+      if(casaToken("<-")){
+         analisadorLexico();
+         //EXP();
+         analisadorLexico();
+         if(casaToken(";")){
+            //fim da linha
+         }else{
+            System.out.println("ERRO SINTATICO");
+         }
+      }else{
+         System.out.println("ERRO SINTATICO");
+      }
+   }
+   
+   
+   // X -> <-EXP[,idX]; | {,idX};
+   public static void X(){
+      if(casaToken("<-")){
+         analisadorLexico();
+         //EXP();
+         analisadorLexico();
+         if(casaToken(",")){
+            DV();
+         }//else if(casaToken(
+      }else if(casaToken(",")){
+         analisadorLexico();
+         V();
+      }else if(casaToken(";")){
+         //fim da linha
+      }
+   }
+   
+   public static void V(){
+      if(casaToken("id")){
+         analisadorLexico();
+         X();
+      }
+   }
+   
+   
+   public static void CR(){
+      if(casaToken("(")){
+         analisadorLexico();
+         EXP();
+         analisadorLexico();
+         if(casaToken(")")){
+            analisadorLexico();
+            Y();
+         }
+      }
+   }
+   
+   public static void Y(){
+      
+   }
+   
+      
+   //Comando de Leitura
+   public static void CL(){
+      if(casaToken("(")){
+         analisadorLexico();
+         if(casaToken("id")){
+            analisadorLexico();
+            if(casaToken(")")){ 
+               analisadorLexico();
+               if(casaToken(";")){
+                  //fim da linha
+               } else {
+                  System.out.println("ERRO SINTATICO");
+               } 
+            }else {
+               System.out.println("ERRO SINTATICO");
+            } 
+         }else {
+            System.out.println("ERRO SINTATICO");
+         } 
+      }else {
+         System.out.println("ERRO SINTATICO");
+      } 
+   }
+   
+   
+   
    public static void main(String [] args)throws IOException{
          inicializarHash();
-         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo2.l.txt";
+         path = "C:/Users/Lucas/Desktop/cp2016a_lp/exemplo2.l.txt";
          //path = args[0];
          buffRead = new BufferedReader(new FileReader(path));
          //System.out.println(path);

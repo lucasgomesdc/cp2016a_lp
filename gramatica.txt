@@ -1,0 +1,58 @@
+=============================DEFINIÇÕES===========================
+DV - Declaração de Variável
+DC - Declaração de COnstantes
+CA - Comando de Atribuição
+CR - Comando de Repetição
+CT - Comando de Teste
+CN - Comando Nulo
+CL - Comando de Leitura
+CE - Comando de Escrita
+TIPO - tipos de variáveis 
+==================================================================
+
+S -> PF
+
+PF -> { CODIGO }
+
+CODIGO -> DV | DC | CA | CR | CT | CN | CL | CE 
+
+DV -> TIPO (CA);
+
+DC -> final TIPO id{,id};
+
+CA -> idX
+
+X -> <-EXP; | {,id};
+
+TIPO -> int | byte | string | boolean
+
+CR -> while'('EXP')' X
+
+X ->  COMANDO_UNICO | begin (CODIGO) endwhile
+
+CT -> if'('EXP')' CT_A
+
+CT_A -> COMANDO_UNICO [else COMANDO_UNICO] | begin {CODIGO} endif CT_B
+
+CT_B -> else begin {CODIGO} endelse
+
+COMANDO_UNICO -> CA | CL | CE
+
+CN -> ';'
+
+CL -> readln'('id')';
+
+CE -> write'('(EXP)')'; | writeln'('(EXP)')';
+
+EXP -> PREC E
+
+PREC -> id | TRUE | FALSE | num | string | lambda
+
+E -> OPL EXP | OPA EXP | OPR EXP | lambda
+
+OPL -> ! | && | "||" 
+
+OPA -> + | - | * | /
+
+OPC -> > | >= | < | <= | ! | ==
+   
