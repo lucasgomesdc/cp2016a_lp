@@ -9,7 +9,7 @@ public class Cp{
    //Hash Tabela de Simbolos
    public static Map<String, String> tS = new HashMap<String, String>();
    public static String path, linha, lex, lex2, token_atual;
-   public static int posLinha;
+   public static int posLinha, declaracao;
    public static BufferedReader buffRead;
    
    //construtor da classe
@@ -32,6 +32,7 @@ public class Cp{
    //FUNÇÃO PARA VERICAR SE TOKEN JA EXISTE NA TABELA, SE ELE NAO EXISTIR, INSERE O TOKEN
    public static void chamaTabela(){
       if(buscaHash(lex) == null){
+         lex2 = "id";
          setHash(lex);
       }
    }
@@ -90,15 +91,18 @@ public class Cp{
       //INICIALIZ UMA VARIAVEL AUXILIAR DE TOKENS
 
       lex2 = "";
+           
+      declaracao = 0; //informa que serao lidas declaracoes de variaveis e constantes
       
       // PERCORRE LINHA A LINHA PARA ANALISAR TODOS OS TOKENS
       while( (linha = buffRead.readLine())!= null ){  
            posLinha = 0;
+           
+           
            //System.out.println(linha.length());
            while(posLinha < linha.length()){
-            lex = "";
-            analisadorLexico();
-            //CODIGO();
+            
+            S();
             
             System.out.println(token_atual);
             
@@ -108,6 +112,7 @@ public class Cp{
   
    
    public static void analisadorLexico(){
+       lex="";
        token_atual = automatoLexico();
        verificaTokenAtual();
    }
@@ -167,7 +172,7 @@ public class Cp{
                      return buscaHash(lex);
                   }
                }else{
-                  lex2 = "id";
+                  lex2 = lex;
                   estado = 2;
                }
                break;
@@ -333,28 +338,46 @@ public class Cp{
       return resposta;
    }
    
-   public static void CODIGO() throws IOException{   
+   public static void S()throws IOException{
+      if(declaracao == 0){
+         analisadorLexico();
+         DECLARACAO();
+      } else
+         analisadorLexico();
+         CODIGO();
+   }
+   
+   
+   public static void DECLARACAO(){
       if(casaToken("int") || casaToken("byte") || casaToken("string") || casaToken("boolean")){
          analisadorLexico();
          DV();
       }else if(casaToken("final")){
          analisadorLexico();
          DC();
-      }else if(casaToken("while")){
+      } else if(token_atual != " " && token_atual != "comentario"){
+         declaracao = 1;
+         //CODIGO();
+      } 
+   }
+   
+   
+   public static void CODIGO() throws IOException{   
+      if(casaToken("while")){
          analisadorLexico();
          CR();
       }else if(casaToken("if")){
          analisadorLexico();
          //CT();
       }else if(casaToken(";")){
-         //fim da linha
+         //fim do codigo
       } else if(casaToken("readln")){
          analisadorLexico();
          CL();
       } else if(casaToken("id")){
          analisadorLexico();
          CA();
-      }else{
+      } else{
          System.out.println("ERRO SINTATICO");
       }
    }
@@ -526,13 +549,44 @@ public class Cp{
    }
    
    
+   public static void EXP(){
+      if(casaToken("+") || casaToken("-")){
+         analisadorLexico(); 
+      }
+      
+      if(casaToken("id") || casaToken("dconstante") || casaToken("sconstante") || casaToken("!"){
+         analisadorLexico();
+         EXP_X();
+         
+         
+         
+         
+      } else if(casaToken("(")){
+         analisadorLexico();
+      }
+   }
+   
+   public static void EXP_X(){
+      
+   }
+   
+   public static void T(){
+   
+   }
+   
+   public static void F(){
+   
+   }
+   
+   
+   
    //FALTA CE E EXPRESSOES
    
    
    
    public static void main(String [] args)throws IOException{
          inicializarHash();
-         path = "C:/Users/Lucas/Desktop/cp2016a_lp/exemplo2.l.txt";
+         path = "C:/Users/lucas/Desktop/teste/declaracao.l.txt";
          //path = args[0];
          buffRead = new BufferedReader(new FileReader(path));
          //System.out.println(path);
