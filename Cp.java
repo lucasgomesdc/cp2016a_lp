@@ -35,6 +35,13 @@ public class Cp{
          setHash(lex);
       }
    }
+   
+   public static void quebraLinha() throws IOException{
+      if(posLinha == linha.length()-1){
+           linha = buffRead.readLine();
+           posLinha = 0;  
+      }
+   }
  
    //Inicializa a Tabela de Simbolos
    public static void inicializarHash(){
@@ -326,7 +333,7 @@ public class Cp{
       return resposta;
    }
    
-   public static void CODIGO(){   
+   public static void CODIGO() throws IOException{   
       if(casaToken("int") || casaToken("byte") || casaToken("string") || casaToken("boolean")){
          analisadorLexico();
          DV();
@@ -338,7 +345,7 @@ public class Cp{
          CR();
       }else if(casaToken("if")){
          analisadorLexico();
-         CT();
+         //CT();
       }else if(casaToken(";")){
          //fim da linha
       } else if(casaToken("readln")){
@@ -414,10 +421,10 @@ public class Cp{
    }
    
    
-   public static void CR(){
+   public static void CR() throws IOException{
       if(casaToken("(")){
          analisadorLexico();
-         EXP();
+         //EXP();
          analisadorLexico();
          if(casaToken(")")){
             analisadorLexico();
@@ -426,8 +433,74 @@ public class Cp{
       }
    }
    
-   public static void Y(){
-      
+   public static void Y() throws IOException{
+      quebraLinha(); //se precisar
+      if(casaToken("begin")){
+         while(casaToken("endwhile")==false){
+            quebraLinha();//se precisar
+            analisadorLexico();
+            if(casaToken("endwhile")==false){
+               CODIGO();
+            }
+         }
+      }else if(casaToken("id")){
+         analisadorLexico();
+         CA();
+      }else if(casaToken("readln")){
+         analisadorLexico();
+         CL();
+      }else if(casaToken("write")){
+         analisadorLexico();
+         //CE();
+      }else if(casaToken("writeln")){
+         analisadorLexico();
+         //CE();
+      }else if(casaToken("if")){
+         
+      }else if(casaToken("while")){
+         analisadorLexico();
+         CR();
+      }
+   }
+   
+   public static void CT() throws IOException{
+      quebraLinha(); //se precisar
+      if(casaToken("begin")){
+         while(casaToken("endif")==false){
+            quebraLinha();//se precisar
+            analisadorLexico();
+            if(casaToken("endif")==false){
+               CODIGO();
+            }
+          
+         }
+         quebraLinha(); //se precisar
+         analisadorLexico();
+         if(casaToken("else")){
+            quebraLinha(); //se precisar
+            analisadorLexico();
+            //CT_B();
+         }//não pode ter estado de erro       
+      }else if(casaToken("id")){
+         analisadorLexico();
+         CA();
+      }else if(casaToken("readln")){
+         analisadorLexico();
+         CL();
+      }else if(casaToken("write")){
+         analisadorLexico();
+         //CE();
+      }else if(casaToken("writeln")){
+         analisadorLexico();
+         //CE();
+      }else if(casaToken("if")){
+         
+      }else if(casaToken("while")){
+         analisadorLexico();
+         CR();
+      }
+   
+   
    }
    
       
@@ -454,6 +527,9 @@ public class Cp{
          System.out.println("ERRO SINTATICO");
       } 
    }
+   
+   
+   //FALTA CE E EXPRESSOES
    
    
    
