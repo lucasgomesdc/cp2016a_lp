@@ -472,7 +472,6 @@ public class Cp{
             if(casaToken("endif")==false){
                CODIGO();
             }
-          
          }
          quebraLinha(); //se precisar
          analisadorLexico();
@@ -499,8 +498,6 @@ public class Cp{
          analisadorLexico();
          CR();
       }
-   
-   
    }
    
       

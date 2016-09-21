@@ -1,4 +1,4 @@
-=============================DEFINIÇÕES===========================
+﻿=============================DEFINIÇÕES===========================
 DV - Declaração de Variável
 DC - Declaração de COnstantes
 CA - Comando de Atribuição
@@ -10,49 +10,43 @@ CE - Comando de Escrita
 TIPO - tipos de variáveis 
 ==================================================================
 
-S -> PF
+S -> {DECLARACAO}{COMANDO} 
 
-PF -> { CODIGO }
+DECLARACAO -> DV | DC
 
-CODIGO -> DV | DC | CA | CR | CT | CN | CL | CE 
+COMANDO-> CA | CR | CT | CN | CL | CE 
 
-DV -> TIPO (CA);
+DV -> TIPO idY;
 
-DC -> final TIPO id{,id};
+DC -> final idY
 
-CA -> idX
+CA -> id<-EXP;
 
-X -> <-EXP; | {,id};
+Y -> <-EXPV | V
+
+V-> ,idY | ;
 
 TIPO -> int | byte | string | boolean
 
 CR -> while'('EXP')' X
 
-X ->  COMANDO_UNICO | begin (CODIGO) endwhile
+X ->  COMANDO | begin {COMANDO} endwhile
 
 CT -> if'('EXP')' CT_A
 
-CT_A -> COMANDO_UNICO [else COMANDO_UNICO] | begin {CODIGO} endif CT_B
-
-CT_B -> else begin {CODIGO} endelse
-
-COMANDO_UNICO -> CA | CL | CE
+CT_A -> COMANDO [else COMANDO]| begin {COMANDO} endif [else begin {COMANDO} endelse]
 
 CN -> ';'
 
 CL -> readln'('id')';
 
-CE -> write'('(EXP)')'; | writeln'('(EXP)')';
+CE -> write'('EXP{,EXP}')'; | writeln'('EXP{,EXP}')';
 
-EXP -> PREC E
+EXP -> EXP_X[(<|>|<=|>=|==|!=)EXP_X]
 
-PREC -> id | TRUE | FALSE | num | string | lambda
+EXP_X -> [+|-]T{(+|-| "||")T}
 
-E -> OPL EXP | OPA EXP | OPR EXP | lambda
+T -> F{(*|/|"&&")}
 
-OPL -> ! | && | "||" 
-
-OPA -> + | - | * | /
-
-OPC -> > | >= | < | <= | ! | ==
+F -> "("EXP")" | id | const | !F
    
