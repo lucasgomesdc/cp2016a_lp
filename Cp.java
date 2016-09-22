@@ -103,7 +103,7 @@ public class Cp{
            while(posLinha < linha.length()){
             
             S();
-            
+            //analisadorLexico();
             System.out.println(token_atual);
             
            } 
@@ -268,8 +268,9 @@ public class Cp{
                }else if(linha.charAt(i) == '.'){              
                   estado = 12; 
                }else{
-                  lex2 = "dconstante";
-                  estado = 2;
+                 
+                  posLinha = i;
+                  return "dconstante";
                }
                break;
              // --------- FIM CASE 11 ----------
@@ -290,8 +291,8 @@ public class Cp{
                   estado = 13;    
                }else{
                   lex += linha.charAt(i);
-                  lex2 = "sconstante";
-                  estado = 2;
+                  posLinha = i;
+                  return "sconstante";
                   
                   //lex2 = lex;
                   
@@ -342,9 +343,10 @@ public class Cp{
       if(declaracao == 0){
          analisadorLexico();
          DECLARACAO();
-      } else
+      }else{
          analisadorLexico();
          CODIGO();
+      }
    }
    
    
@@ -554,7 +556,7 @@ public class Cp{
          analisadorLexico(); 
       }
       
-      if(casaToken("id") || casaToken("dconstante") || casaToken("sconstante") || casaToken("!"){
+      if(casaToken("id") || casaToken("dconstante") || casaToken("sconstante") || casaToken("!")){
          analisadorLexico();
          EXP_X();
          
@@ -586,7 +588,7 @@ public class Cp{
    
    public static void main(String [] args)throws IOException{
          inicializarHash();
-         path = "C:/Users/lucas/Desktop/teste/declaracao.l.txt";
+         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo2.l.txt";
          //path = args[0];
          buffRead = new BufferedReader(new FileReader(path));
          //System.out.println(path);
