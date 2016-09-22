@@ -3,8 +3,18 @@ import java.lang.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Cp{
+/*
+   PONTIFICIA UNIVERSIDADE CATOLICA DE MINAS GERAIS
+   TRABALHO PRATICO DE COMPILADORES
+   
+   PARTES: LEXICO E SINTATICO
+   
+   INTEGRANTES DO GRUPO:
+            - Lucas Eduardo Gomes da Cruz
+            - Pedro Henrique Guimarães Rosa
 
+*/
+public class Cp{
 
    //Hash Tabela de Simbolos
    public static Map<String, String> tS = new HashMap<String, String>();
@@ -727,7 +737,10 @@ public class Cp{
    
    public static void main(String [] args)throws IOException{
       inicializarHash();
-      path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo2.l.txt";
+      
+      //Digitar o arquivo ou diretório com o arquivo no Prompt de Comando logo apos o nome
+      //do programa
+      path = args[0];
 
       buffRead = new BufferedReader(new FileReader(path));
 
