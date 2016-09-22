@@ -15,18 +15,18 @@ public class Cp{
    //construtor da classe
    public Cp(){
       inicializarHash();
-
+   
    }
    
       
    //insere na Hash a token desejada
    public static void setHash(String token){
-       tS.put(token, lex2);
+      tS.put(token, lex2);
    }
    
    //Efetua uma busca na hash pelo token desejado, retorna null se não encontrado
    public static String buscaHash(String token){
-        return tS.get(token);
+      return tS.get(token);
    }
    
    //FUNÇÃO PARA VERICAR SE TOKEN JA EXISTE NA TABELA, SE ELE NAO EXISTIR, INSERE O TOKEN
@@ -39,8 +39,8 @@ public class Cp{
    
    public static void quebraLinha() throws IOException{
       if(posLinha == linha.length()-1){
-           linha = buffRead.readLine();
-           posLinha = 0;  
+         linha = buffRead.readLine();
+         posLinha = 0;  
       }
    }
  
@@ -89,32 +89,32 @@ public class Cp{
    
    public static void analisadorSintatico()throws IOException{
       //INICIALIZ UMA VARIAVEL AUXILIAR DE TOKENS
-
+   
       lex2 = "";
            
       declaracao = 0; //informa que serao lidas declaracoes de variaveis e constantes
       
       // PERCORRE LINHA A LINHA PARA ANALISAR TODOS OS TOKENS
       while( (linha = buffRead.readLine())!= null ){  
-           posLinha = 0;
+         posLinha = 0;
            
            
            //System.out.println(linha.length());
-           while(posLinha < linha.length()){
+         while(posLinha < linha.length()){
             
-            S();
-            //analisadorLexico();
+            //S();
+            analisadorLexico();
             System.out.println(token_atual);
             
-           } 
-       }
+         } 
+      }
    }
   
    
    public static void analisadorLexico(){
-       lex="";
-       token_atual = automatoLexico();
-       verificaTokenAtual();
+      lex="";
+      token_atual = automatoLexico();
+      verificaTokenAtual();
    }
    
    public static String automatoLexico(){
@@ -126,34 +126,44 @@ public class Cp{
                if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_'){
                   lex += linha.charAt(i);
                   estado = 1;
-               }else if(Character.isDigit(linha.charAt(i))){
+               }
+               else if(Character.isDigit(linha.charAt(i))){
                   lex += linha.charAt(i);
                   estado = 11;
-               }else if(linha.charAt(i) == '|'){
+               }
+               else if(linha.charAt(i) == '|'){
                   lex += linha.charAt(i);
                   estado = 3;
-               }else if(linha.charAt(i) == '&'){
+               }
+               else if(linha.charAt(i) == '&'){
                   lex += linha.charAt(i);
                   estado = 4;
-               }else if(linha.charAt(i) == '<'){
+               }
+               else if(linha.charAt(i) == '<'){
                   lex += linha.charAt(i);
                   estado = 5;
-               }else if(linha.charAt(i) == '>'){
+               }
+               else if(linha.charAt(i) == '>'){
                   lex += linha.charAt(i);
                   estado = 6;
-               }else if(linha.charAt(i) == '!'){
+               }
+               else if(linha.charAt(i) == '!'){
                   lex += linha.charAt(i);
                   estado = 7;
-               }else if(linha.charAt(i) == '(' || linha.charAt(i) == ')' || linha.charAt(i) == '-' || linha.charAt(i) == '+' || linha.charAt(i) == '*' || linha.charAt(i) == ',' || linha.charAt(i) == ';'){
+               }
+               else if(linha.charAt(i) == '(' || linha.charAt(i) == ')' || linha.charAt(i) == '-' || linha.charAt(i) == '+' || linha.charAt(i) == '*' || linha.charAt(i) == ',' || linha.charAt(i) == ';'){
                   lex += linha.charAt(i);
                   estado = 2;
-               }else if(linha.charAt(i) == '/' ){
+               }
+               else if(linha.charAt(i) == '/' ){
                   lex+= linha.charAt(i);
                   estado = 8;
-               }else if(linha.charAt(i) == '"'){
+               }
+               else if(linha.charAt(i) == '"'){
                   lex += linha.charAt(i);
                   estado = 13;
-               }else if(linha.charAt(i) == ' '){
+               }
+               else if(linha.charAt(i) == ' '){
                   if(i == ( linha.length()-1)){
                      posLinha = i+1;
                      return " ";
@@ -171,23 +181,25 @@ public class Cp{
                      posLinha = i;
                      return buscaHash(lex);
                   }
-               }else{
+               }
+               else{
                   lex2 = lex;
                   estado = 2;
                }
                break;
                // -------- FIM CASE 1 ---------
-           case 2:
+            case 2:
                chamaTabela();
                i--;
                posLinha = i;
                return buscaHash(lex);
               // --------- FIM CASE 2 ----------
-           case 3:
+            case 3:
                if(linha.charAt(i) == '|'){
                   lex += linha.charAt(i);
                   estado = 2;
-               }else{
+               }
+               else{
                   estado = 666; 
                }
                break;
@@ -196,7 +208,8 @@ public class Cp{
                if(linha.charAt(i) == '&'){
                   lex += linha.charAt(i);
                   estado = 2;
-               }else{
+               }
+               else{
                   estado = 666; 
                }
                break;
@@ -205,91 +218,104 @@ public class Cp{
                if(linha.charAt(i) == '='){
                   lex += linha.charAt(i);
                   estado = 2;
-               }else if(linha.charAt(i) == '-'){
+               }
+               else if(linha.charAt(i) == '-'){
                   lex += linha.charAt(i);
                   estado = 2;               
-               }else{
+               }
+               else{
                   estado = 2; 
                }
                break;
                // --------- FIM CASE 5 ----------
-             case 6:
+            case 6:
                if(linha.charAt(i) == '='){
                   lex += linha.charAt(i);
                   estado = 2;              
-               }else{
+               }
+               else{
                   estado = 2; 
                }
                break;
                // --------- FIM CASE 6 ----------
-             case 7:
+            case 7:
                if(linha.charAt(i) == '='){
                   lex += linha.charAt(i);
                   estado = 2;              
-               }else{
+               }
+               else{
                   estado = 2; 
                }
                break;
                // --------- FIM CASE 7 ----------
-             case 8:
+            case 8:
                if(linha.charAt(i) == '*'){
                   estado = 9;              
-               }else{
+               }
+               else{
                   lex += linha.charAt(i);              
                   estado = 2; 
                }
                break;
                // --------- FIM CASE 8 ----------
-             case 9:
+            case 9:
                if(linha.charAt(i) != '*'){
                   lex = "";
                   estado = 9;              
-               }else{              
+               }
+               else{              
                   estado = 10; 
                }
                break;
                // --------- FIM CASE 9 ----------
-             case 10:
+            case 10:
                if(linha.charAt(i) == '/'){
                   i++;
                   posLinha = i;
                   return "comentario";              
-               }else if(linha.charAt(i) == '*'){              
+               }
+               else if(linha.charAt(i) == '*'){              
                   estado = 10; 
-               }else{
+               }
+               else{
                   estado = 9;
                }
                break;
              // --------- FIM CASE 10 ----------
-             case 11:
+            case 11:
                if(Character.isDigit(linha.charAt(i))){
                   lex += linha.charAt(i);
                   estado = 11;   
-               }else if(linha.charAt(i) == '.'){              
+               }
+               else if(linha.charAt(i) == '.'){              
                   estado = 12; 
-               }else{
+               }
+               else{
                  
                   posLinha = i;
                   return "dconstante";
                }
                break;
              // --------- FIM CASE 11 ----------
-             case 12:
+            case 12:
                if(Character.isDigit(linha.charAt(i))){
                   lex += linha.charAt(i);
                   estado = 12;   
-               }else if(linha.charAt(i) != '.' && !(Character.isDigit(linha.charAt(i)))){              
+               }
+               else if(linha.charAt(i) != '.' && !(Character.isDigit(linha.charAt(i)))){              
                   estado = 2; 
-               }else{
+               }
+               else{
                   estado = 666;
                }
                break;
              // --------- FIM CASE 12 ----------
-             case 13:
+            case 13:
                if(linha.charAt(i) != '"'){
                   lex += linha.charAt(i);
                   estado = 13;    
-               }else{
+               }
+               else{
                   lex += linha.charAt(i);
                   posLinha = i;
                   return "sconstante";
@@ -299,17 +325,17 @@ public class Cp{
                }
                break;
              // --------- FIM CASE 13 ----------
-             case 666:
-                  System.out.println("ERRO");
-                  break;
-             // --------- FIM CASE 666 ----------
-             default:
+            case 666:
                System.out.println("ERRO");
-      
-            }//FIM SWITCH
-         }
-         return null;
+               break;
+             // --------- FIM CASE 666 ----------
+            default:
+               System.out.println("ERRO");
+         
+         }//FIM SWITCH
       }
+      return null;
+   }
 
    
    //Como validar se e' letra ou digit
@@ -350,36 +376,46 @@ public class Cp{
    }
    
    
-   public static void DECLARACAO(){
+   public static void DECLARACAO() throws IOException{
       if(casaToken("int") || casaToken("byte") || casaToken("string") || casaToken("boolean")){
          analisadorLexico();
          DV();
-      }else if(casaToken("final")){
+      }
+      else if(casaToken("final")){
          analisadorLexico();
          DC();
-      } else if(token_atual != " " && token_atual != "comentario"){
+      } 
+      else if(token_atual != " " && token_atual != "comentario"){
          declaracao = 1;
-         //CODIGO();
+         CODIGO();
       } 
    }
    
    
-   public static void CODIGO() throws IOException{   
+   public static void CODIGO() throws IOException{ 
       if(casaToken("while")){
          analisadorLexico();
          CR();
-      }else if(casaToken("if")){
+      }
+      else if(casaToken("if")){
          analisadorLexico();
-         //CT();
-      }else if(casaToken(";")){
+         CT();
+      }
+      else if(casaToken(";")){
          //fim do codigo
-      } else if(casaToken("readln")){
+      } 
+      else if(casaToken("readln")){
          analisadorLexico();
          CL();
-      } else if(casaToken("id")){
+      } 
+      else if(casaToken("id")){
          analisadorLexico();
          CA();
-      } else{
+      }else if(casaToken("write")||casaToken("writeln")){
+         CE();
+      }
+       
+      else{
          System.out.println("ERRO SINTATICO");
       }
    }
@@ -389,7 +425,8 @@ public class Cp{
       if(casaToken("id")){
          analisadorLexico();
          X();
-      }else {
+      }
+      else {
          System.out.println("ERRO SINTATICO");
       }
    }
@@ -399,23 +436,26 @@ public class Cp{
       if(casaToken("id")){
          analisadorLexico();
          CA();
-      } else{
+      } 
+      else{
          System.out.println("ERRO SINTATICO");
       }
    }
    
    
    public static void CA(){
-      if(casaToken("<-")){
+      if(casaToken("atribuicao")){
          analisadorLexico();
-         //EXP();
+         EXP();
          analisadorLexico();
          if(casaToken(";")){
-            //fim da linha
-         }else{
+            System.out.println("SUCESSO");
+         }
+         else{
             System.out.println("ERRO SINTATICO");
          }
-      }else{
+      }
+      else{
          System.out.println("ERRO SINTATICO");
       }
    }
@@ -423,25 +463,26 @@ public class Cp{
    
    // X -> <-EXP[,idX]; | {,idX};
    public static void X(){
-      if(casaToken("<-")){
+      if(casaToken("atribuicao")){
          analisadorLexico();
-         //EXP();
-         analisadorLexico();
-         if(casaToken(",")){
-            DV();
-         }//else if(casaToken(
-      }else if(casaToken(",")){
-         analisadorLexico();
+         EXP();
          V();
-      }else if(casaToken(";")){
-         //fim da linha
+      }
+      else{
+         V();
       }
    }
    
    public static void V(){
-      if(casaToken("id")){
+      if(casaToken(",")){
          analisadorLexico();
-         X();
+         if(casaToken("id")){
+            analisadorLexico();
+            X();
+         }
+      }
+      else if(casaToken(";")==false){
+         System.out.println("ERRO SINTATICO");
       }
    }
    
@@ -449,8 +490,7 @@ public class Cp{
    public static void CR() throws IOException{
       if(casaToken("(")){
          analisadorLexico();
-         //EXP();
-         analisadorLexico();
+         EXP();
          if(casaToken(")")){
             analisadorLexico();
             Y();
@@ -459,38 +499,35 @@ public class Cp{
    }
    
    public static void Y() throws IOException{
-      quebraLinha(); //se precisar
       if(casaToken("begin")){
          while(casaToken("endwhile")==false){
-            quebraLinha();//se precisar
             analisadorLexico();
+            quebraLinha();//se precisar
             if(casaToken("endwhile")==false){
                CODIGO();
             }
          }
-      }else if(casaToken("id")){
+      }
+      else {
          analisadorLexico();
-         CA();
-      }else if(casaToken("readln")){
-         analisadorLexico();
-         CL();
-      }else if(casaToken("write")){
-         analisadorLexico();
-         //CE();
-      }else if(casaToken("writeln")){
-         analisadorLexico();
-         //CE();
-      }else if(casaToken("if")){
-         
-      }else if(casaToken("while")){
-         analisadorLexico();
-         CR();
+         CODIGO();
       }
    }
    
    public static void CT() throws IOException{
-      quebraLinha(); //se precisar
+      if(casaToken("(")){
+         analisadorLexico();
+         EXP();
+         if(casaToken(")")){
+            analisadorLexico();
+            CT_A();
+         }
+      }
+   }
+   
+   public static void CT_A() throws IOException{
       if(casaToken("begin")){
+         quebraLinha();//se precisar
          while(casaToken("endif")==false){
             quebraLinha();//se precisar
             analisadorLexico();
@@ -498,34 +535,24 @@ public class Cp{
                CODIGO();
             }
          }
-         quebraLinha(); //se precisar
-         analisadorLexico();
          if(casaToken("else")){
-            quebraLinha(); //se precisar
-            analisadorLexico();
-            //CT_B();
-         }//não pode ter estado de erro       
-      }else if(casaToken("id")){
-         analisadorLexico();
-         CA();
-      }else if(casaToken("readln")){
-         analisadorLexico();
-         CL();
-      }else if(casaToken("write")){
-         analisadorLexico();
-         //CE();
-      }else if(casaToken("writeln")){
-         analisadorLexico();
-         //CE();
-      }else if(casaToken("if")){
-         
-      }else if(casaToken("while")){
-         analisadorLexico();
-         CR();
+            quebraLinha();//se precisar
+            if(casaToken("begin")){
+               while(casaToken("endelse")==false){
+                  quebraLinha();//se precisar
+                  analisadorLexico();
+                  if(casaToken("endelse")==false){
+                     CODIGO();
+                  }
+               }
+            }else{
+               CODIGO();
+            }
+         }
       }
    }
    
-      
+   
    //Comando de Leitura
    public static void CL(){
       if(casaToken("(")){
@@ -536,48 +563,111 @@ public class Cp{
                analisadorLexico();
                if(casaToken(";")){
                   //fim da linha
-               } else {
+               } 
+               else {
                   System.out.println("ERRO SINTATICO");
                } 
-            }else {
+            }
+            else {
                System.out.println("ERRO SINTATICO");
             } 
-         }else {
+         }
+         else {
             System.out.println("ERRO SINTATICO");
          } 
-      }else {
+      }
+      else {
          System.out.println("ERRO SINTATICO");
       } 
    }
    
    
-   public static void EXP(){
-      if(casaToken("+") || casaToken("-")){
-         analisadorLexico(); 
+   
+   public static void CE(){
+      if(casaToken("write")){
+         analisadorLexico();
+         if(casaToken("(")){
+            analisadorLexico();
+            EXP();
+            while(casaToken(")")==false){
+               if(casaToken(",")){
+                  analisadorLexico();
+                  EXP();
+               }else{
+                  System.out.println("ERRO SINTATICO");
+                  break; 
+               }
+            }
+            analisadorLexico();
+            if(casaToken(";")==false){
+               System.out.println("ERRO SINTATICO");
+            }
+         }
       }
-      
-      if(casaToken("id") || casaToken("dconstante") || casaToken("sconstante") || casaToken("!")){
+      else if(casaToken("writeln")){
+         analisadorLexico();
+         if(casaToken("(")){
+            analisadorLexico();
+            EXP();
+            while(casaToken(")")==false){
+               if(casaToken(",")){
+                  analisadorLexico();
+                  EXP();
+               }else{
+                  System.out.println("ERRO SINTATICO");
+                  break; 
+               }
+            }
+            analisadorLexico();
+            if(casaToken(";")==false){
+               System.out.println("ERRO SINTATICO");
+            }
+         }
+      }
+   }
+   
+   public static void EXP(){
+      EXP_X();
+      if(casaToken("<")||casaToken(">")||casaToken("<=")||casaToken(">=")||casaToken("==")||casaToken("!=")){
          analisadorLexico();
          EXP_X();
-         
-         
-         
-         
-      } else if(casaToken("(")){
-         analisadorLexico();
-      }
+      }  
    }
    
    public static void EXP_X(){
-      
+      if(casaToken("+") || casaToken("-")){
+         analisadorLexico(); 
+      }
+      T();
+      while(casaToken("+")||casaToken("-")||casaToken("||")){
+         analisadorLexico();
+         T();
+      }     
    }
    
    public static void T(){
-   
+      F();
+      while(casaToken("*")||casaToken("/")||casaToken("&&")){
+         analisadorLexico();
+         F();
+      }
    }
    
    public static void F(){
-   
+      if(casaToken("(")){
+         analisadorLexico();
+         EXP();
+      }
+      else if(casaToken("!")){
+         analisadorLexico();
+         F();
+      }
+      else if(casaToken("id")|| casaToken("sconstante") || casaToken("dconstante")){
+         analisadorLexico();
+      } 
+      else{
+         System.out.println("ERRO SINTATICO");
+      }
    }
    
    
@@ -587,12 +677,12 @@ public class Cp{
    
    
    public static void main(String [] args)throws IOException{
-         inicializarHash();
-         path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo2.l.txt";
+      inicializarHash();
+      path = "C:/Users/Lucas/Desktop/cp2016a_lp/exemplo2.l.txt";
          //path = args[0];
-         buffRead = new BufferedReader(new FileReader(path));
+      buffRead = new BufferedReader(new FileReader(path));
          //System.out.println(path);
-         analisadorSintatico();
+      analisadorSintatico();
          //while( (linha = buffRead.readLine())!= null ){
             //if(!linha.equals("")){ //IGNORAR QUEBRA DE LINHA NO ARQUIVO
                //System.out.println(linha.length());

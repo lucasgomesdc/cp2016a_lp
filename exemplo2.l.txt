@@ -1,10 +1,4 @@
-/* L */
-
-
-
-int n;
-
-string nome;
-
 boolean naoTerminou;
-
+while (naoTerminou) begin   
+	n<-n+1;  
+endwhile
