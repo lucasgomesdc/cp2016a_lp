@@ -9,7 +9,7 @@ public class Cp{
    //Hash Tabela de Simbolos
    public static Map<String, String> tS = new HashMap<String, String>();
    public static String path, linha, lex, lex2, token_atual;
-   public static int posLinha, declaracao;
+   public static int posLinha, declaracao, erroLinha;
    public static BufferedReader buffRead;
    
    //construtor da classe
@@ -37,8 +37,14 @@ public class Cp{
       }
    }
    
+   public static void imprimeErro(){
+      System.out.println("ERRO NA LINHA "+ erroLinha + " Token recebido: "+ lex);
+      System.exit(0);
+   }
+   
    public static void quebraLinha() throws IOException{
-      if(posLinha == linha.length()-1){
+      if(posLinha == linha.length()-1 || posLinha == linha.length()){
+         erroLinha++;
          linha = buffRead.readLine();
          posLinha = 0;  
       }
@@ -91,30 +97,28 @@ public class Cp{
       //INICIALIZ UMA VARIAVEL AUXILIAR DE TOKENS
    
       lex2 = "";
-           
+      erroLinha = 0;
       declaracao = 0; //informa que serao lidas declaracoes de variaveis e constantes
       
       // PERCORRE LINHA A LINHA PARA ANALISAR TODOS OS TOKENS
-      while( (linha = buffRead.readLine())!= null ){  
+      while( (linha = buffRead.readLine())!= null ){ 
+         erroLinha++; 
          posLinha = 0;
            
-           
-           //System.out.println(linha.length());
          while(posLinha < linha.length()){
-            
-            //S();
-            analisadorLexico();
-            System.out.println(token_atual);
-            
+            S();     
          } 
       }
+      System.out.println("SUCESSO");
    }
   
    
    public static void analisadorLexico(){
       lex="";
-      token_atual = automatoLexico();
-      verificaTokenAtual();
+      if(linha.length() != 0){
+         token_atual = automatoLexico();   
+         verificaTokenAtual();
+      }
    }
    
    public static String automatoLexico(){
@@ -173,6 +177,9 @@ public class Cp{
                break;
                //---------FIM CASE 0 ----------
             case 1:
+               if(i >= linha.length()){
+                  return lex;
+               }
                if(Character.isLetter(linha.charAt(i)) || linha.charAt(i) == '_' || Character.isDigit(linha.charAt(i))){
                   lex += linha.charAt(i);
                   if(i == (linha.length()-1)){
@@ -369,7 +376,8 @@ public class Cp{
       if(declaracao == 0){
          analisadorLexico();
          DECLARACAO();
-      }else{
+      }
+      else{
          analisadorLexico();
          CODIGO();
       }
@@ -411,12 +419,13 @@ public class Cp{
       else if(casaToken("id")){
          analisadorLexico();
          CA();
-      }else if(casaToken("write")||casaToken("writeln")){
+      }
+      else if(casaToken("write")||casaToken("writeln")){
          CE();
       }
        
       else{
-         System.out.println("ERRO SINTATICO");
+         imprimeErro();
       }
    }
    
@@ -427,7 +436,7 @@ public class Cp{
          X();
       }
       else {
-         System.out.println("ERRO SINTATICO");
+         imprimeErro();
       }
    }
      
@@ -438,7 +447,7 @@ public class Cp{
          CA();
       } 
       else{
-         System.out.println("ERRO SINTATICO");
+         imprimeErro();
       }
    }
    
@@ -447,16 +456,20 @@ public class Cp{
       if(casaToken("atribuicao")){
          analisadorLexico();
          EXP();
-         analisadorLexico();
          if(casaToken(";")){
-            System.out.println("SUCESSO");
+            if(posLinha < linha.length()){
+               analisadorLexico();
+               if(token_atual != " "){
+                  imprimeErro();
+               }
+            }
          }
          else{
-            System.out.println("ERRO SINTATICO");
+            imprimeErro();
          }
       }
       else{
-         System.out.println("ERRO SINTATICO");
+         imprimeErro();
       }
    }
    
@@ -482,7 +495,16 @@ public class Cp{
          }
       }
       else if(casaToken(";")==false){
-         System.out.println("ERRO SINTATICO");
+         imprimeErro();
+      }
+      else{
+         if(posLinha < linha.length()){
+            analisadorLexico();
+            if(token_atual != " "){
+               imprimeErro();
+            }
+         }
+      
       }
    }
    
@@ -501,9 +523,9 @@ public class Cp{
    public static void Y() throws IOException{
       if(casaToken("begin")){
          while(casaToken("endwhile")==false){
-            analisadorLexico();
             quebraLinha();//se precisar
-            if(casaToken("endwhile")==false){
+            analisadorLexico();
+            if(casaToken("endwhile")==false && casaToken(" ")==false){
                CODIGO();
             }
          }
@@ -528,10 +550,10 @@ public class Cp{
    public static void CT_A() throws IOException{
       if(casaToken("begin")){
          quebraLinha();//se precisar
-         while(casaToken("endif")==false){
+         while(casaToken("endif")==false && casaToken(" ")==false){
             quebraLinha();//se precisar
             analisadorLexico();
-            if(casaToken("endif")==false){
+            if(casaToken("endif")==false && casaToken(" ")==false){
                CODIGO();
             }
          }
@@ -545,7 +567,8 @@ public class Cp{
                      CODIGO();
                   }
                }
-            }else{
+            }
+            else{
                CODIGO();
             }
          }
@@ -562,22 +585,28 @@ public class Cp{
             if(casaToken(")")){ 
                analisadorLexico();
                if(casaToken(";")){
-                  //fim da linha
+                  if(posLinha < linha.length()){
+                     analisadorLexico();
+                     if(token_atual != " "){
+                        imprimeErro();
+                     }
+                  }
+               
                } 
                else {
-                  System.out.println("ERRO SINTATICO");
+                  imprimeErro();
                } 
             }
             else {
-               System.out.println("ERRO SINTATICO");
+               imprimeErro();
             } 
          }
          else {
-            System.out.println("ERRO SINTATICO");
+            imprimeErro();
          } 
       }
       else {
-         System.out.println("ERRO SINTATICO");
+         imprimeErro();
       } 
    }
    
@@ -593,14 +622,24 @@ public class Cp{
                if(casaToken(",")){
                   analisadorLexico();
                   EXP();
-               }else{
-                  System.out.println("ERRO SINTATICO");
+               }
+               else{
+                  imprimeErro();
                   break; 
                }
             }
             analisadorLexico();
             if(casaToken(";")==false){
-               System.out.println("ERRO SINTATICO");
+               imprimeErro();
+            }
+            else{
+               if(posLinha < linha.length()){
+                  analisadorLexico();
+                  if(token_atual != " "){
+                     imprimeErro();
+                  }
+               }
+            
             }
          }
       }
@@ -613,14 +652,24 @@ public class Cp{
                if(casaToken(",")){
                   analisadorLexico();
                   EXP();
-               }else{
-                  System.out.println("ERRO SINTATICO");
+               }
+               else{
+                  imprimeErro();
                   break; 
                }
             }
             analisadorLexico();
             if(casaToken(";")==false){
-               System.out.println("ERRO SINTATICO");
+               imprimeErro();
+            }
+            else{
+               if(posLinha < linha.length()){
+                  analisadorLexico();
+                  if(token_atual != " "){
+                     imprimeErro();
+                  }
+               }
+            
             }
          }
       }
@@ -628,7 +677,7 @@ public class Cp{
    
    public static void EXP(){
       EXP_X();
-      if(casaToken("<")||casaToken(">")||casaToken("<=")||casaToken(">=")||casaToken("==")||casaToken("!=")){
+      if(casaToken("comparacao")||casaToken(">")||casaToken("<=")||casaToken(">=")||casaToken("==")||casaToken("!=")){
          analisadorLexico();
          EXP_X();
       }  
@@ -662,11 +711,11 @@ public class Cp{
          analisadorLexico();
          F();
       }
-      else if(casaToken("id")|| casaToken("sconstante") || casaToken("dconstante")){
+      else if(casaToken("id")|| casaToken("sconstante") || casaToken("dconstante") || casaToken("TRUE") || casaToken("FALSE")){
          analisadorLexico();
       } 
       else{
-         System.out.println("ERRO SINTATICO");
+         imprimeErro();
       }
    }
    
@@ -678,15 +727,11 @@ public class Cp{
    
    public static void main(String [] args)throws IOException{
       inicializarHash();
-      path = "C:/Users/Lucas/Desktop/cp2016a_lp/exemplo2.l.txt";
-         //path = args[0];
+      path = "C:/Users/Pedro/Documents/FACULDADE/Compilador/cp2016a_lp/exemplo2.l.txt";
+
       buffRead = new BufferedReader(new FileReader(path));
-         //System.out.println(path);
+
       analisadorSintatico();
-         //while( (linha = buffRead.readLine())!= null ){
-            //if(!linha.equals("")){ //IGNORAR QUEBRA DE LINHA NO ARQUIVO
-               //System.out.println(linha.length());
-            //}
-         //}
+
    }
 }

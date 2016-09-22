@@ -1,4 +1,5 @@
-boolean naoTerminou;
-while (naoTerminou) begin   
-	n<-n+1;  
-endwhile
+int n;
+
+if (n > 20)begin 
+	n<-20;
+endif

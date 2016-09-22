@@ -16,13 +16,13 @@ DECLARACAO -> DV | DC
 
 COMANDO-> CA | CR | CT | CN | CL | CE 
 
-DV -> TIPO idX;
+DV -> TIPO idY;
 
-DC -> final idX
+DC -> final idY
 
 CA -> id<-EXP;
 
-X -> <-EXPV | V
+Y -> <-EXPV | V
 
 V-> ,idY | ;
 
@@ -30,7 +30,7 @@ TIPO -> int | byte | string | boolean
 
 CR -> while'('EXP')' X
 
-Y ->  COMANDO | begin {COMANDO} endwhile
+X ->  COMANDO | begin {COMANDO} endwhile
 
 CT -> if'('EXP')' CT_A
 
@@ -48,5 +48,5 @@ EXP_X -> [+|-]T{(+|-| "||")T}
 
 T -> F{(*|/|"&&")F}
 
-F -> "("EXP")" | id | const | !F
+F -> "("EXP")" | id | const | !F | TRUE | FALSE
    
